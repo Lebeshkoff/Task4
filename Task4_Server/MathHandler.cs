@@ -7,36 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 using SLAU;
 
-namespace Task4_test
+namespace Task4_Server
 {
     class MathHandler
     {
-        public byte[] GfetMatrix(double[,] matrix)
-        {
-            Encoding.UTF8.GetBytes(matrix);
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
-            {
-                bf.Serialize(ms, );
-                return ms.ToArray();
-            }
-        }
-        public double[,] GetMatrix(Stream s)
+        public static double[,] GetMatrix(Stream s)
         {
             var sr = new StreamReader(s);
-            var str = sr.ReadToEnd();
-            var bytes = Encoding.UTF8.GetBytes(str);
-            MemoryStream memStream = new MemoryStream();
+            MemoryStream ms = new();
+            s.CopyTo(ms);
             BinaryFormatter binForm = new BinaryFormatter();
-            memStream.Write(bytes, 0, str.Length);
-            memStream.Seek(0, SeekOrigin.Begin);
-            double[,] matrix = binForm.Deserialize(memStream) as double[,];
+            ms.Position = 0;
+            double[,] matrix = binForm.Deserialize(ms) as double[,];
 
             return matrix;
 
         }
 
-        public double[] SolveMatrix(ExtendedMatrix method)
+        public static double[] SolveMatrix(ExtendedMatrix method)
         {
             return method.Solutions;
         }

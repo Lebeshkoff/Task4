@@ -21,9 +21,9 @@ namespace SLAU
         /// </summary>
         /// <param name="size"> Length of matrix </param>
         /// <param name="matrix"> Given matrix </param>
-        public ExtendedMatrix(int size, double[,] matrix)
+        public ExtendedMatrix(double[,] matrix)
         {
-            this.size = size;
+            this.size = matrix.Length;
             Matrix = matrix;
             Solutions = Solve((double[,])matrix.Clone());
             _countOfLines = size;

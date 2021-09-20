@@ -8,7 +8,7 @@ namespace SLAU
 {
     public class GaussMethod1 : ExtendedMatrix
     {
-        public GaussMethod1(int lenght, double[,] matrix) : base(lenght, matrix)
+        public GaussMethod1(double[,] matrix) : base(matrix)
         {
         }
 

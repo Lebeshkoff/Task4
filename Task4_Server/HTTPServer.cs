@@ -6,19 +6,22 @@ using System.Threading.Tasks;
 using System.Net;
 using System.IO;
 
-namespace Task4_test
+namespace Task4_Server
 {
     public class HTTPServer
     {
-        private HttpListener _listener;
+        private readonly HttpListener _listener = new HttpListener();
         public event Action<Stream> OnConnect = delegate { };
-        public HTTPServer(string url, int port)
+        public event Action OnStop = delegate { };
+        public HTTPServer(string url)
         {
-            _listener.Prefixes.Add("http://" + url + ":" + port);
+            _listener.Prefixes.Add(url);
         }
 
         public Task Start()
         {
+            _listener.Start();
+            Console.WriteLine("Server start");
             while(true)
             {
                 HttpListenerContext context = _listener.GetContext();
@@ -26,16 +29,22 @@ namespace Task4_test
                 Console.WriteLine(request.HttpMethod + " " + request.UserHostName + " " + request.UserAgent);
                 Stream requestStream = request.InputStream;
                 HttpListenerResponse response = context.Response;
+                //OnConnect?.Invoke(requestStream);
+                //StreamReader reader = new StreamReader(requestStream);
+                //string responseStr = reader.ReadToEnd();
 
-                StreamReader reader = new StreamReader(requestStream);
-                string responseStr = reader.ReadToEnd();
-
-                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseStr.ToUpper());
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes("response");
                 response.ContentLength64 = buffer.Length;
                 Stream output = response.OutputStream;
                 output.Write(buffer, 0, buffer.Length);
                 output.Close();
             }
+        }
+
+        public void StopServer()
+        {
+            _listener.Stop();
+            OnStop?.Invoke();
         }
     }
 }
